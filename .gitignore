@@ -1,0 +1,9 @@
+# dependencies / node
+node_modules/
+.vercel/
+.vercel/output/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.swp

@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treinamento de Sonorização — PIBJF Cidade Alta</title>
+<style>
+:root{
+  --bg:#0b0d0f; --panel:#12161a; --panel2:#171c21; --text:#f3f0e9;
+  --muted:#aeb4ba; --line:#293139; --accent:#f3a63b; --accent2:#ffd08a;
+  --good:#70d6a1; --warn:#ffca69; --danger:#ff7f7f; --blue:#79b8ff;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 80% 0%,#1a1b18 0,#0b0d0f 38%);color:var(--text);
+font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:var(--accent2)}
+.container{max-width:var(--max);margin:auto;padding:0 22px}
+header{padding:56px 0 32px;border-bottom:1px solid var(--line)}
+.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.16em;text-transform:uppercase;font-size:.78rem}
+h1{font-size:clamp(2.3rem,6vw,5rem);line-height:.98;margin:12px 0 18px;letter-spacing:-.045em}
+h2{font-size:2rem;line-height:1.1;margin:0 0 16px}
+h3{margin:0 0 8px;font-size:1.25rem}
+h4{margin:0 0 7px}
+.lead{font-size:1.15rem;color:#d9d5cd;max-width:760px}
+.toolbar{position:sticky;top:0;z-index:20;background:rgba(11,13,15,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.toolbar-inner{display:flex;gap:12px;align-items:center;justify-content:space-between;min-height:64px}
+.levels{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px}
+.levels button,.nav button{border:0;background:transparent;color:var(--muted);padding:9px 13px;border-radius:9px;font-weight:800;cursor:pointer}
+.levels button.active{background:var(--accent);color:#17120b}
+.nav{display:flex;gap:3px;overflow:auto;white-space:nowrap}
+.nav button{font-size:.85rem}
+.progress{height:3px;background:var(--line)}
+.progress span{display:block;height:100%;background:var(--accent);width:0}
+main{padding:40px 0 90px}
+section{scroll-margin-top:84px;margin:0 0 70px}
+.section-head{display:flex;gap:18px;align-items:flex-start;margin-bottom:22px}
+.num{flex:0 0 auto;width:44px;height:44px;border:1px solid var(--accent);color:var(--accent);border-radius:50%;display:grid;place-items:center;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:16px;padding:20px}
+.card p:last-child{margin-bottom:0}
+.card ul{margin:10px 0 0;padding-left:20px}
+.theory{border-left:3px solid var(--accent)}
+.advanced{display:none;border-left:3px solid var(--blue)}
+body.advanced-mode .advanced{display:block}
+.basic-label{display:inline-block;color:var(--good);font-size:.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.advanced-label{display:inline-block;color:var(--blue);font-size:.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.callout{padding:17px 18px;border-radius:14px;background:#19140d;border:1px solid #60431e;margin:16px 0}
+.callout.warn{background:#1b160c;border-color:#76531f}
+.callout.danger{background:#1b1010;border-color:#693030}
+.callout.good{background:#0d1914;border-color:#285a43}
+.scenario{position:relative;overflow:hidden}
+.scenario:before{content:"CENÁRIO";position:absolute;right:-35px;top:12px;transform:rotate(90deg);font-size:.65rem;letter-spacing:.15em;color:#535b63}
+.problem{color:#ffb4b4;font-weight:800}
+.solution{color:#9be0ba;font-weight:800}
+.steps{counter-reset:step;list-style:none;padding:0;margin:12px 0 0}
+.steps li{counter-increment:step;display:flex;gap:11px;margin:10px 0}
+.steps li:before{content:counter(step);flex:0 0 26px;height:26px;border-radius:50%;background:#282d31;color:var(--accent2);display:grid;place-items:center;font-size:.8rem;font-weight:900}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.flow span{padding:9px 12px;border:1px solid var(--line);background:#101417;border-radius:10px;font-weight:750}
+.arrow{color:var(--accent);font-weight:900}
+.freq{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:15px 0}
+.freq div{padding:13px 8px;text-align:center;border:1px solid var(--line);border-radius:9px;background:#101417}
+.freq b{display:block;font-size:.85rem}.freq small{color:var(--muted)}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #23292e}
+.checklist input{accent-color:var(--accent);margin-top:5px}
+details{border:1px solid var(--line);border-radius:12px;padding:13px 16px;background:#101417}
+details+details{margin-top:8px}
+summary{cursor:pointer;font-weight:800}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--accent2)}
+code,.kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#090b0d;border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+.mini{font-size:.9rem;color:var(--muted)}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:.72rem;font-weight:900;background:#252b30;color:#d9dde0}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.85rem}
+.search{width:min(310px,42vw);background:#111518;color:var(--text);border:1px solid var(--line);padding:10px 12px;border-radius:10px}
+.hidden{display:none!important}
+@media(max-width:800px){
+ .grid,.grid.three{grid-template-columns:1fr}
+ .nav{display:none}
+ .toolbar-inner{flex-wrap:wrap;padding:8px 0}
+ .search{width:100%}
+ .freq{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+ .toolbar{position:static}.advanced{display:block!important}.search,.levels,.nav{display:none!important}
+ body{background:#fff;color:#111}.card{break-inside:avoid;background:#fff;border-color:#ccc}
+ a{color:#111}.container{max-width:none}
+}
+
+
+/* Prevent cards from visually touching each other anywhere in the course. */
+.card,
+.scenario,
+.advanced,
+.theory,
+.checklist,
+.practice,
+.reference-card{
+  margin-bottom: 24px;
+}
+
+.grid{
+  display:grid;
+  gap:24px;
+  margin-top:24px;
+}
+
+.grid > *{
+  min-width:0;
+}
+
+section > .card,
+section > .scenario,
+section > .advanced,
+section > .grid,
+section > .checklist,
+section > .practice{
+  margin-top:24px;
+}
+
+.scenario + .scenario,
+.card + .card,
+.advanced + .advanced,
+.theory + .theory,
+.checklist + .checklist{
+  margin-top:24px;
+}
+
+/* Horizontal index bar — sits BELOW the header, not as a side rail. */
+.course-sidebar{
+  display:block;
+  width:100%;
+  padding:16px 0;
+  margin:0;
+  background:var(--panel);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.course-sidebar .sidebar-title{
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.72;
+  margin:0 0 12px;
+}
+
+.course-sidebar nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+
+.course-sidebar a{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border:1px solid var(--line);
+  background:#101417;
+  border-radius:9px;
+  color:var(--muted);
+  text-decoration:none;
+  font-size:12px;
+  line-height:1.3;
+  transition:background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+
+.course-sidebar a .idx-num{
+  flex:0 0 auto;
+  width:22px;height:22px;
+  border-radius:50%;
+  border:1px solid var(--accent);
+  color:var(--accent);
+  background:transparent;
+  font-size:.7rem;
+  font-weight:900;
+  display:grid;
+  place-items:center;
+}
+
+.course-sidebar a:hover{
+  background:rgba(255,255,255,.07);
+  color:var(--text);
+}
+
+.course-sidebar a.active{
+  background:rgba(255,255,255,.11);
+  border-color:var(--accent);
+  color:var(--accent2);
+  box-shadow:inset 3px 0 0 var(--accent);
+  font-weight:700;
+}
+
+@media print{
+  .course-sidebar{display:none!important;}
+  .card,.scenario,.advanced,.theory,.checklist,.practice,.reference-card{
+    break-inside:avoid;
+  }
+}
+
+</style>
+</head>
+<body>
+
+
+
+<header>
+  <div class="container">
+    <div class="eyebrow">PIBJF Cidade Alta · Treinamento de Sonorização</div>
+    <h1>Som da igreja,<br>com propósito.</h1>
+    <p class="lead">Manual interativo para operar a <strong>Duonn Axios 24</strong>, resolver problemas reais e cuidar também do áudio da transmissão.</p>
+    <div class="callout good"><strong>Regra de ouro:</strong> você não precisa decorar a mesa. Precisa aprender a seguir o caminho do sinal, identificar o problema e agir no lugar certo.</div>
+  </div>
+</header>
+
+<aside class="course-sidebar" aria-label="Índice do curso">
+  <div class="sidebar-title">Índice do curso</div>
+  <nav>
+    <a href="#mapa" data-section="mapa"><span class="idx-num">00</span>Antes de mexer: entenda o caminho</a><a href="#operacao" data-section="operacao"><span class="idx-num">01</span>Ligar, preparar e desligar o sistema</a><a href="#fundamentos" data-section="fundamentos"><span class="idx-num">02</span>Gain, volume, fader e nível</a><a href="#eq" data-section="eq"><span class="idx-num">03</span>Equalização: resolver problemas, não decorar frequências</a><a href="#compressao" data-section="compressao"><span class="idx-num">04</span>Compressão: controle, não “apertar tudo”</a><a href="#efeitos" data-section="efeitos"><span class="idx-num">05</span>Efeitos: Send e Return</a><a href="#retornos" data-section="retornos"><span class="idx-num">06</span>AUX e retornos: cada músico pode ter uma mix</a><a href="#live" data-section="live"><span class="idx-num">07</span>Áudio da Live: Axios 24 → Reaper → OBS</a><a href="#problemas" data-section="problemas"><span class="idx-num">08</span>“Está acontecendo isso. E agora?”</a><a href="#checklist" data-section="checklist"><span class="idx-num">09</span>Checklist rápido do operador</a><a href="#pratica" data-section="pratica"><span class="idx-num">10</span>Desafios para o treinamento presencial</a>
+  </nav>
+</aside>
+
+<div class="toolbar">
+ <div class="container toolbar-inner">
+   <div class="levels" aria-label="Nível">
+     <button id="basicBtn" class="active" onclick="setLevel('basic')">Básico</button>
+     <button id="advancedBtn" onclick="setLevel('advanced')">Avançado</button>
+   </div>
+   <input class="search" id="search" placeholder="Buscar: microfonia, retorno, Reaper..." oninput="filterContent()">
+   <div class="nav">
+     <button onclick="go('mapa')">Mapa</button><button onclick="go('operacao')">Operação</button>
+     <button onclick="go('fundamentos')">Fundamentos</button><button onclick="go('processamento')">Processamento</button>
+     <button onclick="go('retornos')">Retornos</button><button onclick="go('live')">Live</button>
+     <button onclick="go('problemas')">Problemas</button><button onclick="go('checklist')">Checklist</button>
+   </div>
+ </div>
+ <div class="progress"><span id="progressBar"></span></div>
+</div>
+
+<main class="container">
+
+<section id="mapa">
+ <div class="section-head"><div class="num">00</div><div><div class="eyebrow">Mapa mental</div><h2>Antes de mexer: entenda o caminho</h2></div></div>
+ <div class="card theory">
+  <span class="basic-label">Essencial</span>
+  <p>Todo problema de áudio fica mais fácil quando você sabe <strong>onde o sinal está</strong> e <strong>para onde ele deveria ir</strong>.</p>
+  <div class="flow">
+   <span>Fonte</span><b class="arrow">→</b><span>Entrada / Canal</span><b class="arrow">→</b><span>Gain</span><b class="arrow">→</b>
+   <span>EQ / Dinâmica</span><b class="arrow">→</b><span>Fader</span><b class="arrow">→</b><span>MAIN / AUX / FX</span><b class="arrow">→</b><span>Saída</span>
+  </div>
+  <p class="mini">Na Axios 24, a Duonn especifica 24 pré-amplificadores, 8 auxiliares pré/pós, saídas LR e gravação multipista via USB.</p>
+ </div>
+ <div class="grid">
+  <div class="card scenario">
+   <h3>🎤 “O microfone não está saindo”</h3>
+   <p><span class="problem">Problema:</span> não há som no PA.</p>
+   <ol class="steps">
+    <li>Veja se o canal recebe sinal.</li><li>Confirme mute/fader.</li><li>Confirme o roteamento para MAIN.</li><li>Confira o MAIN e a saída física.</li>
+   </ol>
+  </div>
+  <div class="card scenario">
+   <h3>🎧 “O músico não ouve”</h3>
+   <p><span class="problem">Problema:</span> o PA funciona, mas o retorno não.</p>
+   <ol class="steps">
+    <li>Identifique qual AUX alimenta o retorno.</li><li>Confira o envio do canal para esse AUX.</li><li>Confira o master do AUX.</li><li>Confira cabo, saída e caixa.</li>
+   </ol>
+  </div>
+ </div>
+ <div class="card advanced">
+  <span class="advanced-label">Avançado</span>
+  <p>Pense na mesa como uma rede de roteamento. Um canal pode alimentar destinos diferentes: MAIN para o público, AUX para monitores e FX para processamento de efeitos. Um diagnóstico eficiente percorre o sinal <strong>da fonte ao destino</strong>, em vez de mover vários controles ao mesmo tempo.</p>
+ </div>
+</section>
+
+<section id="operacao">
+ <div class="section-head"><div class="num">01</div><div><div class="eyebrow">Operação</div><h2>Ligar, preparar e desligar o sistema</h2></div></div>
+ <div class="card theory">
+  <span class="basic-label">Nossa sequência</span>
+  <p>Na PIBJF Cidade Alta, siga <strong>sempre a ordem abaixo</strong>. A sequência foi definida para proteger o sistema e evitar estalos no PA.</p>
+  <div class="callout warn"><strong>Regra de ouro:</strong> ao ligar, vá da alimentação/mesa em direção ao PA. Ao desligar, faça exatamente o contrário: <strong>PA primeiro, tomada esquerda do altar por último</strong>.</div>
+ </div>
+
+ <div class="card">
+  <h3>🔌 Ordem para LIGAR</h3>
+  <ol class="steps">
+   <li><strong>Conectar a tomada do canto esquerdo do altar.</strong></li>
+   <li><strong>Ligar a mesa de som (Axios 24).</strong></li>
+   <li><strong>Ligar o amplificador de fones.</strong></li>
+   <li><strong>Ligar a tomada central do altar.</strong></li>
+   <li><strong>Ligar a base do microfone sem fio.</strong><br><span class="mini">Antes de usar, verificar se os microfones sem fio estão com as pilhas carregadas/prontas.</span></li>
+   <li><strong>Ligar a tomada do PA, ao lado da bateria.</strong></li>
+   <li><strong>Ligar o PA por último.</strong></li>
+  </ol>
+ </div>
+
+ <div class="card">
+  <h3>⏻ Ordem para DESLIGAR</h3>
+  <p><strong>Faça tudo ao contrário.</strong></p>
+  <ol class="steps">
+   <li><strong>Desligar o PA primeiro.</strong></li>
+   <li><strong>Desligar a tomada do PA, ao lado da bateria.</strong></li>
+   <li><strong>Desligar a base do microfone sem fio.</strong></li>
+   <li><strong>Desligar a tomada central do altar.</strong></li>
+   <li><strong>Desligar o amplificador de fones.</strong></li>
+   <li><strong>Desligar a mesa de som.</strong></li>
+   <li><strong>Desconectar a tomada do canto esquerdo do altar por último.</strong></li>
+  </ol>
+ </div>
+
+ <div class="card">
+  <h3>🎤 Rotina dos microfones sem fio</h3>
+  <p><strong>Domingo de manhã → preparar domingo à noite.</strong></p>
+  <ol class="steps">
+   <li>Ao terminar o culto de domingo de manhã, recolher os microfones sem fio.</li>
+   <li>Retirar/conferir as pilhas conforme o sistema utilizado.</li>
+   <li>Colocar as pilhas recarregáveis para carregar.</li>
+   <li>Deixar carregando durante o período necessário para que estejam prontas à noite.</li>
+   <li>Antes do culto de domingo à noite, conferir novamente a carga e instalar as pilhas nos microfones.</li>
+  </ol>
+  <div class="callout good"><strong>Objetivo:</strong> nunca descobrir minutos antes do culto que um microfone sem fio está sem carga.</div>
+ </div>
+
+ <div class="grid">
+  <div class="card scenario">
+   <h3>⚠️ “Posso ligar o PA antes da mesa?”</h3>
+   <p><span class="problem">Não.</span> O PA deve ser <strong>o último equipamento ligado</strong>. Isso reduz o risco de transientes/estalos chegarem às caixas.</p>
+  </div>
+  <div class="card scenario">
+   <h3>⚠️ “Acabou o culto. Posso desligar a mesa primeiro?”</h3>
+   <p><span class="problem">Não.</span> Na nossa rotina, o <strong>PA é o primeiro a ser desligado</strong>. Depois seguimos a sequência inversa até a tomada esquerda do altar.</p>
+  </div>
+ </div>
+
+ <div class="card advanced">
+  <span class="advanced-label">Avançado</span>
+  <p>A lógica elétrica é simples: no ligamento, o sistema de reprodução fica por último; no desligamento, ele sai primeiro. O objetivo é evitar que transientes de outros equipamentos sejam amplificados pelo sistema de PA.</p>
+ </div>
+</section>
+
+<section id="fundamentos">
+ <div class="section-head"><div class="num">02</div><div><div class="eyebrow">Fundamentos</div><h2>Gain, volume, fader e nível</h2></div></div>
+ <div class="grid three">
+  <div class="card"><h3>GAIN</h3><p>Define quanto sinal o pré-amplificador recebe da fonte. É o primeiro ajuste do canal.</p></div>
+  <div class="card"><h3>FADER</h3><p>Define quanto daquele canal participa da mix daquele destino.</p></div>
+  <div class="card"><h3>MASTER</h3><p>Controla o nível de uma saída/mix, como o MAIN ou um AUX.</p></div>
+ </div>
+ <div class="callout"><strong>Insight:</strong> se o microfone está baixo, não comece automaticamente aumentando o MAIN. Primeiro descubra <em>onde</em> o sinal está baixo.</div>
+ <div class="grid">
+  <div class="card scenario">
+   <h3>🎤 Cenário: voz muito baixa</h3>
+   <p><span class="problem">Problema:</span> o pastor fala e quase não aparece no PA.</p>
+   <ol class="steps"><li>Observe o medidor do canal.</li><li>Se a entrada está baixa, ajuste o GAIN.</li><li>Depois ajuste o fader do canal.</li><li>Confirme o MAIN.</li></ol>
+  </div>
+  <div class="card scenario">
+   <h3>📈 Cenário: “aumentei o gain e começou a microfonia”</h3>
+   <p><span class="problem">Problema:</span> aumentar a entrada aumenta também o risco de realimentação.</p>
+   <ol class="steps"><li>Reduza o ganho se necessário.</li><li>Procure a origem da realimentação.</li><li>Verifique posição do microfone e caixas.</li><li>Use EQ de forma corretiva, sem tentar resolver tudo com ganho.</li></ol>
+  </div>
+ </div>
+ <div class="card advanced">
+  <span class="advanced-label">Avançado</span>
+  <h3>Headroom e clipping</h3>
+  <p>O objetivo não é fazer o medidor “bater no máximo”. Você precisa de margem para os picos naturais da performance. Ganho excessivo pode levar a clipping antes mesmo de o fader parecer alto.</p>
+ </div>
+</section>
+
+<section id="eq">
+ <div class="section-head"><div class="num">03</div><div><div class="eyebrow">Processamento</div><h2>Equalização: resolver problemas, não decorar frequências</h2></div></div>
+ <div class="card theory">
+  <span class="basic-label">Conceito</span>
+  <p>EQ muda o equilíbrio entre regiões de frequência. O objetivo é fazer a fonte ficar <strong>mais clara, natural e encaixada</strong> na mix.</p>
+  <div class="freq">
+   <div><b>Graves</b><small>peso</small></div><div><b>Médios-graves</b><small>corpo / embolo</small></div>
+   <div><b>Médios</b><small>caráter</small></div><div><b>Presença</b><small>clareza</small></div><div><b>Agudos</b><small>brilho</small></div>
+  </div>
+ </div>
+ <div class="grid">
+  <div class="card scenario"><h3>🎤 Voz abafada</h3><p><span class="problem">Sintoma:</span> parece que a pessoa está atrás de uma parede.</p><p><span class="solution">Abordagem:</span> investigue excesso de graves/médios-graves e falta de presença. Faça movimentos pequenos e compare com bypass.</p></div>
+  <div class="card scenario"><h3>🎤 Voz estridente</h3><p><span class="problem">Sintoma:</span> a voz fica agressiva e cansativa.</p><p><span class="solution">Abordagem:</span> procure a região que está incomodando e corte com moderação. Não “mate” todos os agudos.</p></div>
+  <div class="card scenario"><h3>🎸 Mix embolada</h3><p><span class="problem">Sintoma:</span> baixo, bumbo, teclado e vozes brigam.</p><p><span class="solution">Abordagem:</span> pense no conjunto. Às vezes o melhor EQ é retirar o excesso de uma fonte para abrir espaço para outra.</p></div>
+  <div class="card scenario"><h3>📢 Microfonia</h3><p><span class="problem">Sintoma:</span> uma frequência dispara e começa a realimentar.</p><p><span class="solution">Abordagem:</span> identifique qual microfone/caixa está envolvido, reduza a causa e só depois use EQ corretivo.</p></div>
+ </div>
+ <div class="card advanced"><span class="advanced-label">Avançado</span><p>EQ não é uma tabela universal. A frequência problemática depende de microfone, fonte, posição, acústica, caixas e ganho do sistema. Use referências como ponto de partida, mas decida pelo ouvido e pelo comportamento do sistema.</p></div>
+</section>
+
+<section id="compressao">
+ <div class="section-head"><div class="num">04</div><div><div class="eyebrow">Processamento</div><h2>Compressão: controle, não “apertar tudo”</h2></div></div>
+ <div class="card theory">
+  <span class="basic-label">Conceito</span>
+  <p>O compressor reduz a diferença entre partes mais altas e mais baixas do sinal. Ele pode deixar a voz mais estável, mas uma configuração exagerada pode mudar o comportamento do sistema.</p>
+ </div>
+ <div class="grid">
+  <div class="card scenario">
+   <h3>🎤 Pastor alterna muito entre baixo e alto</h3>
+   <p><span class="solution">Solução:</span> ajuste GAIN primeiro; depois use compressão moderada para reduzir a variação e facilitar a mix.</p>
+  </div>
+  <div class="card scenario">
+   <h3>⚠️ “Compressor forte causou microfonia”</h3>
+   <p><strong>Insight importante:</strong> compressão não “cria microfonia” por mágica. O risco aumenta quando a compressão + ganho de saída/makeup fazem o nível médio ficar maior ou quando o operador compensa a perda de pico aumentando o canal. Isso reduz a margem antes da realimentação.</p>
+  </div>
+  <div class="card scenario">
+   <h3>🔊 Voz ficou “espremida”</h3>
+   <p><span class="problem">Sintoma:</span> pouca dinâmica, som cansativo ou artificial.</p><p><span class="solution">Solução:</span> reduza a intensidade da compressão, reveja threshold/ratio e compare com bypass.</p>
+  </div>
+  <div class="card scenario">
+   <h3>🎧 Retorno ficou estranho depois do compressor</h3>
+   <p>Se o canal comprimido também alimenta um AUX, o músico pode estar ouvindo a dinâmica já processada. Verifique como o envio do AUX está configurado e se esse comportamento é desejado.</p>
+  </div>
+ </div>
+ <div class="card advanced"><span class="advanced-label">Avançado</span><p><strong>Threshold</strong> define quando a compressão começa; <strong>ratio</strong> define sua intensidade; <strong>attack</strong> controla a rapidez de atuação; <strong>release</strong> controla a recuperação; <strong>makeup/output gain</strong> recompõe nível, mas pode reduzir a margem antes da microfonia. Sempre escute o resultado, não apenas os números.</p></div>
+</section>
+
+<section id="efeitos">
+ <div class="section-head"><div class="num">05</div><div><div class="eyebrow">FX</div><h2>Efeitos: Send e Return</h2></div></div>
+ <div class="card theory">
+  <p>Em vez de colocar “reverb dentro do microfone”, pense em <strong>enviar uma parte do canal para um efeito</strong> e depois misturar o retorno desse efeito.</p>
+  <div class="flow"><span>Voz</span><b class="arrow">→</b><span>Canal</span><b class="arrow">→</b><span>FX Send</span><b class="arrow">→</b><span>Reverb</span><b class="arrow">→</b><span>FX Return</span><b class="arrow">→</b><span>Mix</span></div>
+ </div>
+ <div class="grid">
+  <div class="card scenario"><h3>🎤 “Quero mais reverb na cantora”</h3><ol class="steps"><li>Selecione o canal vocal.</li><li>Aumente o envio para o FX desejado.</li><li>Confira o processamento.</li><li>Ajuste o retorno do efeito.</li><li>Evite excesso: a voz precisa continuar inteligível.</li></ol></div>
+  <div class="card scenario"><h3>🌫️ “Tudo está muito distante”</h3><p>Reverb demais pode esconder consoantes e embolar a mix. Antes de aumentar o efeito, verifique se a voz já está pouco definida por EQ, posição ou acústica.</p></div>
+ </div>
+ <div class="card advanced"><span class="advanced-label">Avançado</span><p>Entenda a diferença entre processamento inserido no caminho do canal e processamento por envio/retorno. Em efeitos de tempo, o retorno normalmente é usado como parte da mix, permitindo compartilhar um mesmo processador entre várias fontes.</p></div>
+</section>
+
+<section id="retornos">
+ <div class="section-head"><div class="num">06</div><div><div class="eyebrow">Monitores</div><h2>AUX e retornos: cada músico pode ter uma mix</h2></div></div>
+ <div class="card theory">
+  <p>O <strong>MAIN</strong> é a mix destinada ao público. Um <strong>AUX</strong> pode alimentar uma mix diferente para um músico ou grupo.</p>
+  <div class="flow"><span>Canal vocal</span><b class="arrow">→</b><span>MAIN</span><b class="arrow">→</b><span>PA</span></div>
+  <div class="flow"><span>Canal vocal</span><b class="arrow">→</b><span>AUX 1</span><b class="arrow">→</b><span>Retorno do vocalista</span></div>
+ </div>
+ <div class="grid">
+  <div class="card scenario">
+   <h3>🎹 “Meu retorno está muito baixo”</h3>
+   <ol class="steps"><li>Identifique qual AUX alimenta o retorno.</li><li>Selecione esse AUX.</li><li>Encontre o canal do teclado.</li><li>Aumente o envio do teclado para aquele AUX.</li><li>Confira o master do AUX.</li><li>Confira saída, cabo e caixa.</li></ol>
+  </div>
+  <div class="card scenario">
+   <h3>🔊 “Aumentei o retorno e começou microfonia”</h3>
+   <p>O retorno está mais alto no sistema e pode ter reduzido a margem antes da realimentação.</p><p><span class="solution">Não faça apenas:</span> “abaixar o AUX e pronto”. Procure qual fonte está alimentando o retorno e qual frequência/sistema está realimentando.</p>
+  </div>
+  <div class="card scenario">
+   <h3>🎧 “O músico quer mais voz, mas o público está bom”</h3>
+   <p>Não aumente o canal no MAIN. Aumente o <strong>send daquele canal para o AUX do músico</strong>.</p>
+  </div>
+  <div class="card scenario">
+   <h3>🎚️ “O AUX está alto, mas a caixa continua baixa”</h3>
+   <p>Faça o diagnóstico por etapas: master AUX → saída física → cabo → entrada da caixa → volume/gain da caixa.</p>
+  </div>
+ </div>
+ <div class="card advanced"><span class="advanced-label">Avançado</span><p>A Axios 24 possui 8 auxiliares com operação pré/pós, segundo a especificação da Duonn. O comportamento pré/pós determina se mudanças posteriores no fader do canal acompanham ou não o nível enviado ao AUX. Use isso conscientemente ao desenhar os retornos.</p></div>
+</section>
+
+<section id="live">
+ <div class="section-head"><div class="num">07</div><div><div class="eyebrow">Transmissão</div><h2>Áudio da Live: Axios 24 → Reaper → OBS</h2></div></div>
+ <div class="card theory">
+  <span class="basic-label">Caminho usado pela igreja</span>
+  <div class="flow">
+   <span>Axios 24</span><b class="arrow">→</b><span>PC da transmissão</span><b class="arrow">→</b><span>Reaper</span><b class="arrow">→</b><span>Virtual Cable</span><b class="arrow">→</b><span>OBS</span><b class="arrow">→</b><span>Live</span>
+  </div>
+  <p><strong>Ideia central:</strong> a live tem uma mix própria. O Reaper faz a mixagem no PC da transmissão e envia o resultado para o OBS pelo Virtual Cable.</p>
+ </div>
+
+ <div class="card">
+  <h3>📺 Checklist enxuto — antes da transmissão</h3>
+  <p class="mini">Considerando que o PC já está configurado e o projeto da igreja está preparado para abrir o Reaper automaticamente, a rotina do operador pode ser curta:</p>
+  <div class="checklist">
+   <label><input type="checkbox"> Abrir/confirmar o <strong>Reaper</strong> e conferir que o projeto da transmissão está carregado.</label>
+   <label><input type="checkbox"> Conferir se os <strong>canais necessários estão armados</strong> e recebendo sinal da Axios.</label>
+   <label><input type="checkbox"> Fazer um teste rápido de <strong>voz e música</strong> no Reaper.</label>
+   <label><input type="checkbox"> Conferir se o <strong>Virtual Cable</strong> está recebendo a mix do Reaper.</label>
+   <label><input type="checkbox"> Abrir/confirmar o <strong>OBS</strong> e verificar o medidor de áudio.</label>
+   <label><input type="checkbox"> Confirmar que não há <strong>clipping, mute ou eco</strong>.</label>
+  </div>
+ </div>
+
+ <div class="callout warn"><strong>Sobre o Reaper:</strong> o REAPER pode ser configurado para abrir/carregar um projeto automaticamente, mas isso depende da configuração do PC. Como a estação da igreja já está preparada para esse fluxo, o checklist deve tratar <strong>“projeto carregado e correto”</strong> como uma conferência, não como uma tarefa de configuração.</div>
+
+ <div class="grid">
+  <div class="card scenario">
+   <h3>🔴 “A Axios tem sinal, mas o Reaper não”</h3>
+   <ol class="steps"><li>Confira se o Reaper está usando o dispositivo de entrada correto.</li><li>Confira se os canais estão armados.</li><li>Veja se os medidores dos canais respondem.</li><li>Teste novamente com uma fonte conhecida.</li></ol>
+  </div>
+  <div class="card scenario">
+   <h3>🔴 “O Reaper tem áudio, mas o OBS não”</h3>
+   <ol class="steps"><li>Confira o Master do Reaper.</li><li>Confira se a saída está indo para o Virtual Cable.</li><li>Confira a fonte de áudio do OBS.</li><li>Veja se o medidor do OBS responde.</li></ol>
+  </div>
+  <div class="card scenario">
+   <h3>🔴 “A live está com eco”</h3>
+   <p>Procure por <strong>dupla monitoração</strong>: o áudio pode estar chegando ao computador por um caminho e sendo monitorado novamente por outro. O objetivo é ter um único caminho para a mix final da transmissão.</p>
+  </div>
+  <div class="card scenario">
+   <h3>🔴 “A live está distorcendo, mas o salão está normal”</h3>
+   <p>O problema provavelmente está depois da Axios. Confira a entrada do Reaper, os níveis dos canais, o Master, o Virtual Cable e a entrada do OBS — nessa ordem.</p>
+  </div>
+  <div class="card advanced">
+   <span class="advanced-label">Avançado</span>
+   <p>Para diagnosticar rapidamente, pergunte: <strong>“Em qual ponto o sinal desapareceu ou começou a distorcer?”</strong> Axios → entrada do Reaper → mix/processamento → Master → Virtual Cable → OBS.</p>
+  </div>
+ </div>
+</section>
+
+<section id="problemas">
+ <div class="section-head"><div class="num">08</div><div><div class="eyebrow">Diagnóstico</div><h2>“Está acontecendo isso. E agora?”</h2></div></div>
+ <div class="grid">
+  <div class="card scenario"><h3>🔇 Não sai som</h3><ol class="steps"><li>Existe sinal entrando?</li><li>Canal está muteado?</li><li>Fader está aberto?</li><li>Canal está roteado para o destino?</li><li>Master do destino está aberto?</li><li>Saída física está conectada?</li></ol></div>
+  <div class="card scenario"><h3>📢 Microfonia</h3><ol class="steps"><li>Qual microfone?</li><li>Qual caixa está envolvida?</li><li>Qual mix está realimentando?</li><li>Reduza o nível causador.</li><li>Verifique posição microfone/caixa.</li><li>Use EQ corretivo se necessário.</li></ol></div>
+  <div class="card scenario"><h3>📉 Tudo baixo</h3><ol class="steps"><li>Fonte está gerando sinal?</li><li>Gain está adequado?</li><li>Faders estão adequados?</li><li>Main/AUX está adequado?</li><li>Há algum ponto do caminho reduzido?</li></ol></div>
+  <div class="card scenario"><h3>🔥 Está clipando</h3><ol class="steps"><li>Descubra onde o medidor está clipando.</li><li>Reduza o nível naquele estágio.</li><li>Não tente corrigir clipping aumentando outro estágio.</li><li>Verifique novamente o caminho completo.</li></ol></div>
+  <div class="card scenario"><h3>🌫️ Som embolado</h3><ol class="steps"><li>Ouça cada fonte.</li><li>Verifique excesso de graves/médios-graves.</li><li>Reduza efeitos excessivos.</li><li>Veja se muitas fontes ocupam o mesmo espaço.</li></ol></div>
+  <div class="card scenario"><h3>🎧 Retorno diferente do PA</h3><p>Isso pode ser normal: AUX e MAIN podem ter mixes diferentes. Primeiro descubra se a diferença é intencional; depois corrija o que realmente estiver errado.</p></div>
+ </div>
+</section>
+
+<section id="checklist">
+ <div class="section-head"><div class="num">09</div><div><div class="eyebrow">Dia de culto</div><h2>Checklist rápido do operador</h2></div></div>
+ <div class="grid">
+  <div class="card">
+   <h3>🎛️ Som do templo</h3>
+   <div class="checklist">
+    <label><input type="checkbox"> Axios ligada e acessível.</label>
+    <label><input type="checkbox"> Entradas identificadas.</label>
+    <label><input type="checkbox"> Ganhos ajustados.</label>
+    <label><input type="checkbox"> Vozes testadas.</label>
+    <label><input type="checkbox"> Instrumentos testados.</label>
+    <label><input type="checkbox"> EQ e dinâmica conferidos.</label>
+    <label><input type="checkbox"> FX conferidos.</label>
+    <label><input type="checkbox"> Cada AUX/retorno testado.</label>
+    <label><input type="checkbox"> MAIN testado em nível seguro.</label>
+    <label><input type="checkbox"> Problemas de cabos/ruídos verificados.</label>
+   </div>
+  </div>
+  <div class="card">
+   <h3>📺 Transmissão</h3>
+   <div class="checklist">
+    <label><input type="checkbox"> PC ligado.</label>
+    <label><input type="checkbox"> Reaper aberto.</label>
+    <label><input type="checkbox"> Projeto correto carregado.</label>
+    <label><input type="checkbox"> Inputs da Axios conferidos.</label>
+    <label><input type="checkbox"> Canais necessários armados.</label>
+    <label><input type="checkbox"> Mix do Reaper funcionando.</label>
+    <label><input type="checkbox"> Master do Reaper funcionando.</label>
+    <label><input type="checkbox"> Virtual Cable recebendo sinal.</label>
+    <label><input type="checkbox"> OBS recebendo sinal.</label>
+    <label><input type="checkbox"> Teste de voz e música feito.</label>
+    <label><input type="checkbox"> Sem clipping.</label>
+    <label><input type="checkbox"> Sem eco/dupla monitoração.</label>
+   </div>
+  </div>
+ </div>
+ <div class="callout good"><strong>Antes de começar:</strong> faça um teste de verdade. Não basta “estar ligado”. Uma cadeia de áudio só está pronta quando o sinal percorreu todo o caminho até o destino.</div>
+</section>
+
+<section id="pratica">
+ <div class="section-head"><div class="num">10</div><div><div class="eyebrow">Prática</div><h2>Desafios para o treinamento presencial</h2></div></div>
+ <div class="grid three">
+  <div class="card"><span class="badge">DESAFIO 01</span><h3>Voz baixa</h3><p>O pastor fala baixo no PA. Ajuste sem simplesmente aumentar o MAIN.</p></div>
+  <div class="card"><span class="badge">DESAFIO 02</span><h3>Retorno</h3><p>O tecladista quer mais voz no retorno, sem mudar o som do público.</p></div>
+  <div class="card"><span class="badge">DESAFIO 03</span><h3>Microfonia</h3><p>Um retorno começa a apitar quando o músico pede mais volume.</p></div>
+  <div class="card"><span class="badge">DESAFIO 04</span><h3>Reverb</h3><p>A cantora quer mais ambiente, mas a voz precisa continuar inteligível.</p></div>
+  <div class="card"><span class="badge">DESAFIO 05</span><h3>Live sem áudio</h3><p>A Axios tem sinal, mas o OBS não recebe. Encontre onde o caminho foi interrompido.</p></div>
+  <div class="card"><span class="badge">DESAFIO 06</span><h3>Live distorcendo</h3><p>O salão está normal, mas a transmissão está clipando. Ache o estágio que está saturando.</p></div>
+ </div>
+ <div class="card advanced"><span class="advanced-label">Avançado</span><p>Faça os participantes explicarem o <strong>porquê</strong> de cada ação. O objetivo não é apenas chegar ao resultado, mas formar operadores capazes de diagnosticar situações novas.</p></div>
+</section>
+
+<section>
+ <div class="card">
+  <h2>Referência da mesa</h2>
+  <p>Este curso foi estruturado em torno da <strong>Duonn Axios 24</strong>. A página oficial informa 24 pré-amplificadores com entradas combo P10/XLR, 8 auxiliares pré/pós com saídas XLR, saídas LR, gravação multipista via USB, controle por navegador e phantom power +48 V.</p>
+  <p>Para atualizações e software, consulte a página oficial da Duonn. A documentação/manual pode exigir cadastro na área de suporte da fabricante.</p>
+  <p><a href="https://www.duonn.com.br/produto/axios-24" target="_blank" rel="noopener">Duonn — Axios 24</a> · <a href="https://www.duonn.com.br/servicos/softwares-da-duonn" target="_blank" rel="noopener">Duonn — Softwares</a> · <a href="https://duonn.com.br/login" target="_blank" rel="noopener">Duonn — Área de suporte</a></p>
+ </div>
+</section>
+
+</main>
+
+<footer>
+ <div class="container">
+  <strong>PIBJF Cidade Alta · Treinamento de Sonorização</strong><br>
+  Material de apoio — versão atualizada. Ajuste nomes de canais, AUX, template do Reaper, Virtual Cable e procedimentos específicos conforme a configuração real da igreja.
+ </div>
+</footer>
+
+<script>
+function setLevel(level){
+  document.body.classList.toggle('advanced-mode', level==='advanced');
+  document.getElementById('basicBtn').classList.toggle('active', level==='basic');
+  document.getElementById('advancedBtn').classList.toggle('active', level==='advanced');
+  localStorage.setItem('pibjf-level',level);
+}
+function go(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+function filterContent(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  document.querySelectorAll('section').forEach(s=>{
+    if(!q){s.classList.remove('hidden');return}
+    s.classList.toggle('hidden',!s.innerText.toLowerCase().includes(q));
+  });
+}
+document.addEventListener('scroll',()=>{
+  const max=document.documentElement.scrollHeight-innerHeight;
+  document.getElementById('progressBar').style.width=(max>0?(scrollY/max)*100:0)+'%';
+});
+document.querySelectorAll('.checklist input').forEach((el,i)=>{
+  const key='pibjf-check-'+i;
+  el.checked=localStorage.getItem(key)==='1';
+  el.addEventListener('change',()=>localStorage.setItem(key,el.checked?'1':'0'));
+});
+setLevel(localStorage.getItem('pibjf-level')||'basic');
+</script>
+
+<script id="SIDEBAR_INDEX_ACTIVE_SECTION">
+(function () {
+  const sidebar = document.querySelector('.course-sidebar');
+  if (!sidebar) return;
+
+  const links = [...sidebar.querySelectorAll('a[data-section]')];
+  const sections = links
+    .map(link => document.getElementById(link.dataset.section))
+    .filter(Boolean);
+
+  const setActive = (id) => {
+    links.forEach(link => {
+      link.classList.toggle('active', link.dataset.section === id);
+    });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (visible) setActive(visible.target.id);
+  }, {
+    rootMargin: '-18% 0px -68% 0px',
+    threshold: [0.05, 0.2, 0.5]
+  });
+
+  sections.forEach(section => observer.observe(section));
+
+  links.forEach(link => {
+    link.addEventListener('click', () => setActive(link.dataset.section));
+  });
+
+  if (sections[0]) setActive(sections[0].id);
+})();
+</script>
+
+</body>
+</html>
