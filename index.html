@@ -650,8 +650,13 @@ document.querySelectorAll('.checklist input').forEach((el,i)=>{
   el.addEventListener('change',()=>localStorage.setItem(key,el.checked?'1':'0'));
 });
 
-// Floating sidebar starts just below the header — measure its real height.
-function syncSidebar(){ document.documentElement.style.setProperty('--header-h', (document.querySelector('header')?.offsetHeight||0)+'px'); }
+// Floating sidebar rises with the header: top = header's current bottom in the
+// viewport (clamped at >= 0 so it pins to the top once the header scrolls away).
+function syncSidebar(){
+  const h = document.querySelector('header');
+  const top = h ? Math.max(0, h.getBoundingClientRect().bottom) : 0;
+  document.documentElement.style.setProperty('--header-h', top + 'px');
+}
 syncSidebar();
 window.addEventListener('load', syncSidebar);
 window.addEventListener('resize', syncSidebar);
